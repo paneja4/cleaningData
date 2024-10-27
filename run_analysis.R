@@ -55,6 +55,7 @@ final_agg_data <- final_data[,
                              lapply(.SD, mean),
                              by=.(subject_id, label_name)]
 
+# making data tidy using gather and separate
 df_inter <- gather(final_agg_data, 'variable-stat-cordinate', average, -subject_id, -label_name, na.rm=TRUE) %>%
     separate('variable-stat-cordinate', c("measured_variable","stats","coordinate"), sep="-") 
 
