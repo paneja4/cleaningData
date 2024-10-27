@@ -6,23 +6,29 @@ library(data.table)
 library(dplyr)
 library(tidyr)
 
+# reading labels
 activity_labels <- fread('../GettingCleaning/UCI HAR Dataset/activity_labels.txt')
 
+# reading features
 features <- fread('../GettingCleaning/UCI HAR Dataset/features.txt')
 features <- rename(features, var_id=V1, var_name=V2)
 
+# reading xTrain
 x_train <- fread('../GettingCleaning/UCI HAR Dataset/train/X_train.txt')
 names(x_train) <- features[, var_name]
 
+# reading Y train
 y_train <- fread('../GettingCleaning/UCI HAR Dataset/train/y_train.txt')
 
+# reading sub_train
 sub_train <- fread('../GettingCleaning/UCI HAR Dataset/train/subject_train.txt')
 sub_train <- rename(sub_train, subject_id=V1)
 
+# reading x_train
 x_train <- cbind(sub_train, x_train)
 train <- cbind(x_train, y_train[activity_labels, .(label_name = i.V2),on=list(V1=V1) , nomatch = 0])
 
-####
+#### repeating read sets for test files
 x_test <- fread('../GettingCleaning/UCI HAR Dataset/test/X_test.txt')
 names(x_test) <- features[, var_name]
 
@@ -34,6 +40,7 @@ sub_test <- rename(sub_test, subject_id=V1)
 x_test <- cbind(sub_test, x_test)
 test <- cbind(x_test, y_test[activity_labels, .(label_name = i.V2),on=list(V1=V1) , nomatch = 0])
 
+# merging files
 combined_data <- rbind(train, test)
 
 cols <- c('subject_id', 
@@ -63,6 +70,7 @@ setDT(project_result)
 
 project_result <- project_result[stats=='mean()'][, stats:=NULL]
 
+# final result
 project_result
 
 
